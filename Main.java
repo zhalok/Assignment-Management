@@ -74,15 +74,7 @@ class Student {
        this.Password = password;
     }
     
-    int verify() throws Exception
-    {
-        
-    }
-
-    void make_request()
-    {
-          
-    }
+    
 
 }
 
@@ -90,16 +82,24 @@ class Authentification{
 
     int Login_as_Student(String reg,String pass) throws Exception
     {
-        
+         
          BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
          String s;
          while((s=reader.readLine())!=null)
          {
              String[] words = s.split("\\s+");
-             String registered_red = words[0];
+             String registered_reg = words[0];
              String registered_pass = words[1];
+             if(registered_reg.matches(reg)&&registered_pass.matches(pass)){
+             reader.close();    
+             return 1;
+             }
+
 
          }
+
+         reader.close();
+         return 0;
       
        
     }
@@ -109,8 +109,12 @@ class Authentification{
 
     }
 
-    void Register_as_Student(Student student)
+    void Register_as_Student(String name,String reg,String dept,String session,String pass) throws Exception
     {
+         BufferedWriter writer = new BufferedWriter(new FileWriter("./Amin/Student_Request.txt",true));
+         String info = reg+" "+pass+" "+name+" "+dept+" "+session;
+         writer.write(info);
+         writer.close();
 
     }
 
@@ -126,5 +130,79 @@ class Authentification{
 public class Main{
     public static void main(String[] args) {
 
-       
+       while(true)
+       {
+
+       System.out.println("Welcome to the terminal based application");
+       System.out.println("Do u want to login? or register?");
+       Scanner scanner = new Scanner(System.in);
+       String decide = scanner.nextLine();
+       int isLoggedin=0;
+       if(decide.matches("Login")||decide.matches("login"))
+       {
+           System.out.println("Please provide your registration id");
+           String reg = scanner.nextLine();
+           System.out.println("Please provide your password");
+           String pass = scanner.nextLine();
+           Authentification authentification = new Authentification();
+           try{
+               int val = authentification.Login_as_Student(reg, pass);
+               if(val==1){
+                   isLoggedin=1;
+                   System.out.println("Logged in Successfully");
+               }
+               else {
+                   System.out.println("Credentials did not match do you want to try again?");
+                   String tryagain=scanner.nextLine();
+                   if(tryagain.matches("no")||tryagain.matches("No"))
+                   return ;
+               }
+
+           }catch(Exception e)
+           {
+               System.out.println("Exception Occured");
+               
+           }
+       }
+       else {
+           System.out.println("Please provide your name");
+           String name = scanner.nextLine();
+           System.out.println("Please provide your registration id");
+           String reg = scanner.nextLine();
+           System.out.println("Please provide your department");
+           String dept = scanner.nextLine();
+           System.out.println("Please provide your session");
+           String session = scanner.nextLine();
+           System.out.println("Please provide a password");
+           String pass = scanner.nextLine();
+           System.out.println("Confirm password");
+           String confirm_pass = scanner.nextLine();
+           if(pass.matches(confirm_pass)){
+               Authentification authentification = new Authentification();
+               try{
+               authentification.Register_as_Student(name, reg, dept, session, pass);
+               System.out.println("Successfully Requested");
+               System.out.println("Do u want to continute ?");
+               String cont=scanner.nextLine();
+               if(cont.matches("no")||cont.matches("No"))
+               return ;
+
+               
+               }catch(Exception e)
+               {
+                   System.out.println("Exception occured");
+               }
+           }
+           
+
+       }
+
+       if(isLoggedin==1)
+       {
+
+       }
+
+    }
+}
+
 }
