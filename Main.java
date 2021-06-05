@@ -65,6 +65,11 @@ class Student {
         return this.Department;
     }
 
+    public String getPassword()
+    {
+        return this.Password;
+    }
+
     Student(String Name,String Registration_number,String Session,String Department,String password)
     {
        this.Name = Name;
@@ -76,6 +81,18 @@ class Student {
     
     
 
+}
+
+
+class Instructor{
+    private String Name,Department,Session,Registration_id,Password;
+    Instructor(String name,String department,String registration_id,String password,String session)
+    {
+        name=this.Name;
+        department=this.Department;
+
+
+    }
 }
 
 
@@ -111,8 +128,15 @@ class Authentification{
 
     }
 
-    int Register_as_Student(String name,String reg,String dept,String session,String pass) throws Exception
+    int Register_as_Student(Student student) throws Exception
     {
+         String name,reg,dept,session,pass;
+         name=student.getName();
+         reg=student.getReg();
+         pass=student.getPassword();
+         dept=student.getDepartment();
+         session=student.getSession();
+
          BufferedWriter writer = new BufferedWriter(new FileWriter("./Amin/Student_Request.txt",true));
          String info = reg+" "+pass+" "+name+" "+dept+" "+session;
          BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
@@ -213,7 +237,8 @@ public class Main{
            if(pass.matches(confirm_pass)){
                Authentification authentification = new Authentification();
                try{
-               int val = authentification.Register_as_Student(name, reg, dept, session, pass);
+               Student student = new Student(name, reg, session, dept, pass);
+               int val = authentification.Register_as_Student(student);
                if(val==1){
                System.out.println("Successfully Requested");
                }
