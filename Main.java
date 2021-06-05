@@ -78,6 +78,8 @@ class Student {
 
 }
 
+
+
 class Authentification{
 
     int Login_as_Student(String reg,String pass) throws Exception
@@ -109,12 +111,43 @@ class Authentification{
 
     }
 
-    void Register_as_Student(String name,String reg,String dept,String session,String pass) throws Exception
+    int Register_as_Student(String name,String reg,String dept,String session,String pass) throws Exception
     {
          BufferedWriter writer = new BufferedWriter(new FileWriter("./Amin/Student_Request.txt",true));
          String info = reg+" "+pass+" "+name+" "+dept+" "+session;
-         writer.write(info);
+         BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
+         BufferedReader reader2 = new BufferedReader(new FileReader("./Amin/Student_Request.txt"));
+         String str;
+         while((str=reader.readLine())!=null)
+         {
+             String[] words=str.split("\\s+");
+             String regg=words[0];
+             if(regg.matches(reg))
+             {
+                //  System.out.println("User Already Registered");
+                 reader.close();
+                 return 0;
+             }
+         }
+         reader.close();
+
+         while((str=reader2.readLine())!=null)
+         {
+             String[] words=str.split("\\s+");
+             String regg = words[0];
+             if(regg.matches(reg))
+             {
+                 reader2.close();
+                 return 0;
+             }
+         }
+       
+         reader2.close(); 
+
+         writer.write(info+"\n");
+         
          writer.close();
+         return 1;
 
     }
 
@@ -164,28 +197,35 @@ public class Main{
                
            }
        }
-       else {
+       else if(decide.matches("register")||decide.matches("Register")) {
            System.out.println("Please provide your name");
-           String name = scanner.nextLine();
+           String name = scanner.nextLine().trim();
            System.out.println("Please provide your registration id");
-           String reg = scanner.nextLine();
+           String reg = scanner.nextLine().trim();
            System.out.println("Please provide your department");
-           String dept = scanner.nextLine();
+           String dept = scanner.nextLine().trim();
            System.out.println("Please provide your session");
-           String session = scanner.nextLine();
+           String session = scanner.nextLine().trim();
            System.out.println("Please provide a password");
-           String pass = scanner.nextLine();
+           String pass = scanner.nextLine().trim();
            System.out.println("Confirm password");
-           String confirm_pass = scanner.nextLine();
+           String confirm_pass = scanner.nextLine().trim();
            if(pass.matches(confirm_pass)){
                Authentification authentification = new Authentification();
                try{
-               authentification.Register_as_Student(name, reg, dept, session, pass);
+               int val = authentification.Register_as_Student(name, reg, dept, session, pass);
+               if(val==1){
                System.out.println("Successfully Requested");
+               }
+               else {
+                System.out.println("User already registered");
+               }
                System.out.println("Do u want to continute ?");
                String cont=scanner.nextLine();
                if(cont.matches("no")||cont.matches("No"))
                return ;
+               
+               
 
                
                }catch(Exception e)
@@ -193,8 +233,21 @@ public class Main{
                    System.out.println("Exception occured");
                }
            }
+           else {
+              
+               System.out.println("Passwords didnt match wanna try again?");
+               String tryagain=scanner.nextLine().trim();
+               if(tryagain.matches("no")||tryagain.matches("No")) break;
+               
+
+           }
            
 
+       }
+       else {
+           System.out.println("Unknown Command");
+           System.out.println("For logging in write Login or login");
+           System.out.println("For registration write Register or register");
        }
 
        if(isLoggedin==1)
