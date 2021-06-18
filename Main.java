@@ -7,15 +7,33 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.util.Scanner;
 
-class Filehandle{
-    
-    int assignement_of;
-    Filehandle(int assignment_of)
-    {
-        this.assignement_of = assignment_of;
-    }
+interface Features{
 
-    void ReadandWriteFile() throws IOException
+    void ReadandWriteFileforAssignments();
+    void ReadandWriteFileforResults();
+    int Login_as_Student();
+    int Login_as_Instructor();
+    int Register_as_Student();
+    int Register_as_Instructor();
+
+
+
+}
+
+class Adapter implements Features{
+    public void ReadandWriteFileforAssignments(){}
+    public void ReadandWriteFileforResults(){}
+    public int Login_as_Student(){ return 0; }
+    public int Login_as_Instructor(){ return 0; }
+    public int Register_as_Student(){ return 0; }
+    public int Register_as_Instructor(){ return 0; }
+}
+
+class Filehandle extends Adapter{
+    
+   
+
+    public void ReadandWriteFileforAssignments(int assignement_of) throws IOException
     {
      
       BufferedReader reader = new BufferedReader(new FileReader("submit_file.txt"));
@@ -30,6 +48,21 @@ class Filehandle{
       reader.close();
       writer.close();
       
+    }
+
+    public void ReadandWriteFileforResults(int result_of) throws Exception{
+
+        BufferedReader reader = new BufferedReader(new FileReader("submit_assignment.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("./published_results/assignment_of_"+result_of+".txt",true));
+        String s;
+        while((s=reader.readLine())!=null)
+        writer.write(s+"\n");
+        writer.write("\n");
+  
+        
+  
+        reader.close();
+        writer.close();
     }
 
 
@@ -128,9 +161,9 @@ class Instructor{
 
 
 
-class Authentification{
+class Authentification extends Adapter{
 
-    int Login_as_Student(String reg,String pass) throws Exception
+    public int Login_as_Student(String reg,String pass) throws Exception
     {
          
          BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
@@ -155,7 +188,7 @@ class Authentification{
        
     }
 
-    int Login_as_Instructor (String reg,String pass) throws Exception
+    public int Login_as_Instructor (String reg,String pass) throws Exception
     {
         BufferedReader reader = new BufferedReader(new FileReader("./Amin/Instructors.txt"));
         String s;
@@ -178,7 +211,7 @@ class Authentification{
      
     }
 
-    int Register_as_Student(Student student) throws Exception
+    public int Register_as_Student(Student student) throws Exception
     {
          String name,reg,dept,session,pass;
          name=student.getName();
@@ -227,7 +260,7 @@ class Authentification{
 
     }
 
-    int Register_as_instructor(Instructor instructor) throws Exception
+    public int Register_as_instructor(Instructor instructor) throws Exception
     {
         String name,reg,dept,session,pass;
         name = instructor.getName();
@@ -445,9 +478,9 @@ public class Main{
                  String submit = scanner.nextLine();
                  if(submit.matches("submit")||submit.matches("submit"))
                  {
-                     Filehandle filehandle = new Filehandle(loggedinStudentID);
+                     Filehandle filehandle = new Filehandle();
                      try{
-                         filehandle.ReadandWriteFile();
+                         filehandle.ReadandWriteFileforAssignments(loggedinStudentID);
                      }catch(Exception e)
                      {
                          System.out.println(e);
@@ -460,7 +493,21 @@ public class Main{
        }
        else if(isLoggedin==2)
        {
+           System.out.println("Logged in as an instructor! ");
+           System.out.println("Do u want to give marks ?");
+           System.out.println("Please submit the result in the result folder and then press any key");
+           scanner.nextLine();
+           Filehandle filehandle = new Filehandle();
+           try{
+
+            filehandle.ReadandWriteFileforResults(loggedinInstructorID);
+
+           }catch(Exception e)
+           {
+               System.out.println("File not found");
+           }
            
+
             
        }
 
