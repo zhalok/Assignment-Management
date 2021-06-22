@@ -1,3 +1,4 @@
+import java.beans.beancontext.BeanContext;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -36,7 +37,7 @@ class Filehandle extends Adapter{
     public void ReadandWriteFileforAssignments(int assignement_of) throws IOException
     {
      
-      BufferedReader reader = new BufferedReader(new FileReader("submit_file.txt"));
+      BufferedReader reader = new BufferedReader(new FileReader("submit_assignment.txt"));
       BufferedWriter writer = new BufferedWriter(new FileWriter("./assignments/assignment_of_"+assignement_of+".txt",true));
       String s;
       while((s=reader.readLine())!=null)
@@ -52,8 +53,8 @@ class Filehandle extends Adapter{
 
     public void ReadandWriteFileforResults(int result_of) throws Exception{
 
-        BufferedReader reader = new BufferedReader(new FileReader("submit_assignment.txt"));
-        BufferedWriter writer = new BufferedWriter(new FileWriter("./published_results/assignment_of_"+result_of+".txt",true));
+        BufferedReader reader = new BufferedReader(new FileReader("submit_result.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("./published_results/result_of_"+result_of+".txt",true));
         String s;
         while((s=reader.readLine())!=null)
         writer.write(s+"\n");
@@ -116,11 +117,13 @@ class Student {
 
 }
 
+//name, reg, session, dept, pass
 
 class Instructor{
     private String Name,Department,Session,Registration_id,Password;
-    Instructor(String name,String department,String registration_id,String password,String session)
+    Instructor(String name,String registration_id,String session,String department,String password)
     {
+     
        this.Name=name;
        this.Department=department;
        this.Session=session;
@@ -166,11 +169,11 @@ class Authentification extends Adapter{
     public int Login_as_Student(String reg,String pass) throws Exception
     {
          
-         BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
+         BufferedReader reader = new BufferedReader(new FileReader("Students.txt"));
          String s;
          while((s=reader.readLine())!=null)
          {
-            
+             if(s.length()>0){
              String[] words = s.split("\\s+");
              String registered_reg = words[0];
              String registered_pass = words[1];
@@ -178,6 +181,8 @@ class Authentification extends Adapter{
              reader.close();    
              return 1;
              }
+            
+            }
 
 
          }
@@ -190,11 +195,11 @@ class Authentification extends Adapter{
 
     public int Login_as_Instructor (String reg,String pass) throws Exception
     {
-        BufferedReader reader = new BufferedReader(new FileReader("./Amin/Instructors.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("Instructors.txt"));
         String s;
         while((s=reader.readLine())!=null)
         {
-           
+            if(s.length()>0){ 
             String[] words = s.split("\\s+");
             String registered_reg = words[0];
             String registered_pass = words[1];
@@ -202,6 +207,8 @@ class Authentification extends Adapter{
             reader.close();    
             return 1;
             }
+
+        }
 
 
         }
@@ -220,13 +227,14 @@ class Authentification extends Adapter{
          dept=student.getDepartment();
          session=student.getSession();
 
-         BufferedWriter writer = new BufferedWriter(new FileWriter("./Amin/Student_Request.txt",true));
+         BufferedWriter writer = new BufferedWriter(new FileWriter("Student_Request.txt",true));
          String info = reg+" "+pass+" "+name+" "+dept+" "+session;
-         BufferedReader reader = new BufferedReader(new FileReader("./Amin/Students.txt"));
-         BufferedReader reader2 = new BufferedReader(new FileReader("./Amin/Student_Request.txt"));
+         BufferedReader reader = new BufferedReader(new FileReader("Students.txt"));
+         BufferedReader reader2 = new BufferedReader(new FileReader("Student_Request.txt"));
          String str;
          while((str=reader.readLine())!=null)
          {
+             if(str.length()>0) {
              String[] words=str.split("\\s+");
              String regg=words[0];
              String ddept = words[words.length-2];
@@ -237,11 +245,14 @@ class Authentification extends Adapter{
                  reader.close();
                  return 0;
              }
+
+            }
          }
          reader.close();
 
          while((str=reader2.readLine())!=null)
          {
+             if(str.length()>0){
              String[] words=str.split("\\s+");
              String regg = words[0];
              if(regg.matches(reg))
@@ -249,6 +260,7 @@ class Authentification extends Adapter{
                  reader2.close();
                  return 0;
              }
+            }
          }
        
          reader2.close(); 
@@ -269,13 +281,14 @@ class Authentification extends Adapter{
         pass =  instructor.getPassword();
         dept = instructor.getDepartment();
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("./Amin/Instructor_Request.txt",true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter("Instructor_Request.txt",true));
         String info = reg+" "+pass+" "+name+" "+dept+" "+session;
-        BufferedReader reader = new BufferedReader(new FileReader("./Amin/Instructors.txt"));
-        BufferedReader reader2 = new BufferedReader(new FileReader("./Amin/Instructor_Request.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("Instructors.txt"));
+        BufferedReader reader2 = new BufferedReader(new FileReader("Instructor_Request.txt"));
         String str;
         while((str=reader.readLine())!=null)
         {
+            if(str.length()>0){
             String[] words=str.split("\\s+");
             String regg=words[0];
             String ddept = words[words.length-2];
@@ -287,10 +300,13 @@ class Authentification extends Adapter{
                 return 0;
             }
         }
+
+        }
         reader.close();
 
         while((str=reader2.readLine())!=null)
         {
+            if(str.length()>0){
             String[] words=str.split("\\s+");
             String regg = words[0];
             if(regg.matches(reg))
@@ -298,6 +314,8 @@ class Authentification extends Adapter{
                 reader2.close();
                 return 0;
             }
+        }
+
         }
       
         reader2.close(); 
@@ -315,6 +333,9 @@ class Authentification extends Adapter{
 public class Main{
    
     public static void main(String[] args) {
+
+        
+      
       
 
        while(true)
@@ -322,7 +343,6 @@ public class Main{
 
      
 
-       System.out.println("Welcome to the terminal based application");
        System.out.println("Do u want to login? or register?");
        Scanner scanner = new Scanner(System.in);
        String decide = scanner.nextLine();
@@ -338,34 +358,45 @@ public class Main{
            System.out.println("Please provide your registration id");
            int reg = scanner.nextInt();
            System.out.println("Please provide your password");
-           String pass = scanner.nextLine();
+        //    int demo = scanner.nextInt();
+        //    System.out.println(demo);
+           Scanner scanner2 = new Scanner(System.in);
+           String pass = scanner2.nextLine();
+           
            Authentification authentification = new Authentification();
            try{
                int val = authentification.Login_as_Student(Integer.toString(reg), pass);
                if(val==1){
                    isLoggedin=1;
-                   loggedinInstructorID=reg;
+                   loggedinStudentID=reg;
                    System.out.println("Logged in Successfully");
                }
                else {
 
                    System.out.println("Credentials did not match do you want to try again?");
-                   String tryagain=scanner.nextLine();
+                   Scanner scanner3 = new Scanner(System.in);
+                   String tryagain=scanner3.nextLine();
                    if(tryagain.matches("no")||tryagain.matches("No"))
                    return ;
                }
 
            }catch(Exception e)
            {
-               System.out.println("Exception Occured");
+               e.printStackTrace();
                
            }
         }
 
         else if(type.matches("Instructor")||type.matches("instructor"))
         {
-             int instructor_reg = scanner.nextInt();
-             String password = scanner.nextLine();
+             Scanner scanner2 = new Scanner(System.in);
+             System.out.println("Please provide your registration id");
+             int instructor_reg = scanner2.nextInt();
+             System.out.println("Please provide your password");
+             Scanner scanner4 = new Scanner(System.in);
+
+             String password = scanner4.nextLine();
+
              Authentification authentification = new Authentification();
              try{
               int val = authentification.Login_as_Instructor(Integer.toString(instructor_reg), password);
@@ -446,7 +477,7 @@ public class Main{
                
                }catch(Exception e)
                {
-                   System.out.println("Exception occured");
+                   e.printStackTrace();
                }
            }
            else {
@@ -471,16 +502,20 @@ public class Main{
             
              System.out.println("You are Logged in as a student");
              System.out.println("Do you want to submit an assignment ?");
-             String ans = scanner.nextLine();
+             Scanner scanner2 = new Scanner(System.in);
+             String ans = scanner2.nextLine();
              if(ans.matches("Yes")||ans.matches("yes"))
              {
-                 System.out.println("Please write your assignment in the submit.txt file then write submit");
-                 String submit = scanner.nextLine();
+                
+                 System.out.println("Please write your assignment in the submit_assignment.txt file then write submit");
+                 Scanner scanner3 = new Scanner(System.in);
+                 String submit = scanner3.nextLine();
                  if(submit.matches("submit")||submit.matches("submit"))
                  {
                      Filehandle filehandle = new Filehandle();
                      try{
                          filehandle.ReadandWriteFileforAssignments(loggedinStudentID);
+                         System.out.println(loggedinStudentID);
                      }catch(Exception e)
                      {
                          System.out.println(e);

@@ -1,4 +1,4 @@
-package Admin;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,7 +40,6 @@ public class Admin {
         
     }
     public static void main(String[] args) {
-        
         Admin admin = new Admin();
        
         while(true)
@@ -59,7 +58,8 @@ public class Admin {
                 admin.authentify_Students();
                 System.out.println("Students are authentified now please check the student lists");
                 System.out.println("Do u want to continiue?");
-                String msg = scanner.nextLine();
+                Scanner scanner2 = new Scanner(System.in);
+                String msg = scanner2.nextLine();
                 if(msg.matches("No")||msg.matches("no"))
                 {
                     return ;
@@ -76,7 +76,8 @@ public class Admin {
                 admin.authentify_Instructors();
                 System.out.println("Instructors are authentified");
                 System.out.println("Do u want to continute?");
-                String msg = scanner.nextLine();
+                Scanner scanner2 = new Scanner(System.in);
+                String msg = scanner2.nextLine();
                 if(msg.matches("No")||msg.matches("no"))
                 {
                     return ;
